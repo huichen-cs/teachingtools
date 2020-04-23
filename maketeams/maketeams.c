@@ -78,6 +78,7 @@ static int readline(const int fd, char **buf) {
 	int i;
 
 	*buf = malloc(BUFFER_SIZE);
+	if (*buf == NULL) return -1;
 	i = 0;
 	while (read(fd, *buf+i, 1) > 0 && *(*buf+i) != '\n') {
 		if (*(*buf+i) == '\r') {
@@ -85,10 +86,12 @@ static int readline(const int fd, char **buf) {
 		}	
 		i ++;
 		if (i >= BUFFER_SIZE) {
+			free(*buf);
 			return -1;
 		} 
 	} 
 	*(*buf+i) = '\0';
+	if (i == 0) free(*buf);
 	return i;
 }
 
